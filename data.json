@@ -6,18 +6,18 @@
             "ar": "\u0645\u064f\u062d\u064e\u0631\u064e\u0651\u0645",
             "days": 30
         },
-        "date": "DD-MM-1446"
+        "date": "07-01-1447"
     },
-    "weekday": "",
+    "weekday": "Wednesday",
     "times": {
-        "Fajr": "",
-        "Sunrise": "",
-        "Dhuhr": "",
-        "Asr": "",
-        "Sunset": "",
-        "Maghrib": "",
-        "Isha": "",
-        "Midnight": ""
+        "Fajr": "03:52",
+        "Sunrise": "05:39",
+        "Dhuhr": "13:22",
+        "Asr": "18:41",
+        "Sunset": "21:03",
+        "Maghrib": "21:03",
+        "Isha": "22:52",
+        "Midnight": "01:22"
     },
-    "date": "DD-MM-YYYY"
+    "date": "02-07-2025"
 }

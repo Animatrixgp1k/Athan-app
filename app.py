@@ -97,7 +97,9 @@ def main() -> None:
     islamicMonth: str = parsedData["islamicData"]["month"]["en"]
     weekday: str = parsedData["weekday"]
     prayerTimes: dict = parsedData["times"]
+    print(prayerTimes)
 
 
 if __name__ == "__main__":
     main()
+
