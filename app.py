@@ -50,7 +50,7 @@ def parseData(data: dict) -> dict:
     times: dict = data["data"]["timings"]
     dateData: dict = data["data"]["date"]
 
-    islamicDateData: dict = dateData["hijri"]
+    islamicDateData: dict = dateData["hijri"]  
     islamicMonthData: dict = islamicDateData["month"]
     islamicDate: str = islamicDateData["date"]
     islamicData  = {
