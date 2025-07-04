@@ -1,10 +1,21 @@
-import tkinter
+from customtkinter import *
 import requests
-import datetime
+from datetime import datetime
 from geopy.geocoders import Nominatim
 from timezonefinder import TimezoneFinder
 import re
 import json
+
+
+def dateConvert(dateStr: str) -> str:
+    date_obj = datetime.strptime(dateStr, "%d-%m-%Y")
+    formatted_date = date_obj.strftime("%B %#d, %Y")
+    return formatted_date
+
+
+def timeConvert(time_str) -> str:
+    time_obj = datetime.strptime(time_str, "%H:%M")
+    return time_obj.strftime("%I:%M %p").lstrip("0")
 
 
 def loadJson() -> dict:
@@ -25,7 +36,7 @@ def findTimezone(lat: float, lon: float) -> str:
 
 
 def findDate() -> str:
-    requestedDate: str = str(datetime.datetime.now())
+    requestedDate: str = str(datetime.now())
     date: list = re.split("- | ", requestedDate)
     strDate = str(date.pop(0))
     strDateReversed = "-".join(reversed(strDate.split("-")))
@@ -69,6 +80,50 @@ def parseData(data: dict) -> dict:
     return returnData
 
 
+def displayData(parsedData: dict):
+    font = ("Times New Roman", 20)
+    color = "#A7A7A7"
+
+    date: str = parsedData["date"]
+    islamicDate: str = parsedData["islamicData"]["date"]
+    islamicMonth: str = parsedData["islamicData"]["month"]["en"]
+    weekday: str = parsedData["weekday"]
+    prayerTimes: dict = parsedData["times"]
+    prayerTimesAmPm = {key: timeConvert(prayerTimes[key]) for key in prayerTimes}
+
+    window = CTk()
+    window.geometry("500x500")
+    set_appearance_mode("dark")
+
+    weekdayLabel = CTkLabel(master=window, text=weekday, font=font, text_color=color)
+    weekdayLabel.place(x=210, y=20)
+
+    dateLabel = CTkLabel(master=window, text=dateConvert(date), font=font, text_color=color)
+    dateLabel.place(x=200, y=50)
+
+    islamicDateLabel = CTkLabel(master=window, text=f"{islamicMonth} {" ".join(dateConvert(islamicDate).split(" ")[1:])} AH", font=font, text_color=color)
+    islamicDateLabel.place(x=160, y=80)
+
+    sunKeys = ["Sunrise", "Sunset", "Midnight"]
+    sunTuples = []
+    for key in sunKeys:
+        sunTuples.append(prayerTimesAmPm.pop(key))
+    
+    globalTimeDict: dict = {sunKeys[x]: sunTuples[x] for x in range(len(sunKeys))}
+
+    for newkey in globalTimeDict:
+        time = globalTimeDict[newkey]
+        globalTimeLabel = CTkLabel(master=window, text=f"{newkey}: {time}", font=font, text_color=color)
+        globalTimeLabel.place(x=70, y=(190 + (30 * sunKeys.index(newkey))))
+
+    for num, key in enumerate(prayerTimesAmPm):
+        offset = 170
+        timeLabel = CTkLabel(master=window, text=f"{key}: {prayerTimesAmPm[key]}", font=font, text_color=color)
+        timeLabel.place(x=250, y=(offset + (30 * num)))
+
+    window.mainloop()
+
+
 def main() -> None:
     link = "https://api.aladhan.com/v1/timings"
     date = findDate()
@@ -93,11 +148,8 @@ def main() -> None:
             raise LookupError
     
     writeToJson(parsedData)
-    islamicDate: str = parsedData["islamicData"]["date"]
-    islamicMonth: str = parsedData["islamicData"]["month"]["en"]
-    weekday: str = parsedData["weekday"]
-    prayerTimes: dict = parsedData["times"]
-    print(prayerTimes)
+    displayData(parsedData)
+
 
 
 if __name__ == "__main__":
